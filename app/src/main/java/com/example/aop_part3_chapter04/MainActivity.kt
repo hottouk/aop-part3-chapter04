@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //룸DB
         db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
@@ -64,10 +65,6 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
                 response.body()?.let {
-                    Log.d(TAG, it.toString())
-                    it.books.forEach { book ->
-                        Log.d(TAG, book.toString())
-                    }
                     attachBookAdapter(it.books)
                 }
             }
@@ -76,14 +73,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, t.toString())
             }
         })
-
-        searchEditTextView.setOnKeyListener { _, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == MotionEvent.ACTION_DOWN) {
-                search(searchEditTextView.text.toString())
-                return@setOnKeyListener true
-            }
-            return@setOnKeyListener false
-        }
+        initSearchEditText()
     }
 
     private fun search(keyword: String) {
@@ -127,10 +117,11 @@ class MainActivity : AppCompatActivity() {
         })
         historyRecyclerView.adapter = adapter
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
-        initSearchEditText()
+
     }
 
     private fun initSearchEditText() {
+        Log.d(TAG, "showHistoryView 시험")
         searchEditTextView.setOnKeyListener { view, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == MotionEvent.ACTION_DOWN) {
                 search(searchEditTextView.text.toString())
@@ -146,31 +137,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun saveSearchKeyword(keyword: String) {
-        thread {
+        Thread {
             db.historyDao().insertHistory(History(null, keyword))
         }.start()
     }
 
     private fun deleteSearchKeyword(keyword: String) {
-        thread {
+        Thread {
             db.historyDao().delete(keyword)
             showHistoryRecyclerView()
         }.start()
     }
 
-
+    //HistoryView 보이기
     private fun showHistoryRecyclerView() {
+        Log.d(TAG, "showHistoryView 시험")
         Thread {
             val keywordsHistory = db.historyDao().getAll().reversed()
-            attachHistoryAdapter(keywordsHistory)
             runOnUiThread {
-                historyRecyclerView.isVisible = true
+                attachHistoryAdapter(keywordsHistory)
             }
         }.start()
+        historyRecyclerView.isVisible = true
     }
 
+    //HistoryView 숨기기
     private fun hideHistoryRecyclerView() {
         historyRecyclerView.isVisible = false
     }

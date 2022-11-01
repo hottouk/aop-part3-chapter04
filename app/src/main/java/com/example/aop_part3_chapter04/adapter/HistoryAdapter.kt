@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aop_part3_chapter04.R
@@ -15,7 +16,7 @@ class HistoryAdapter(
 ) : RecyclerView.Adapter<HistoryAdapter.HistoryItemViewHolder>() {
     inner class HistoryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val keywordTextView: TextView
-        val historyClearBtn: Button
+        val historyClearBtn: ImageButton
 
         init {
             keywordTextView = itemView.findViewById(R.id.history_keyword_textview)
