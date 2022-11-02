@@ -27,7 +27,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.utils.widget.ImageFilterView
+            <ImageView
                 android:id="@+id/cover_detail_imageview"
                 android:layout_width="300dp"
                 android:layout_height="300dp"

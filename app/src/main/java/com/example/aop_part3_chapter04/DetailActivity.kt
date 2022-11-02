@@ -16,7 +16,7 @@ class DetailActivity : AppCompatActivity() {
         findViewById(R.id.title_detail_textview)
     }
     private val coverImgView: ImageView by lazy {
-        findViewById(R.id.cover_imgview)
+        findViewById(R.id.cover_detail_imageview)
     }
     private val descriptionTextView: TextView by lazy {
         findViewById(R.id.description_detail_textview)
@@ -30,22 +30,19 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-
-        Log.d("mainn","Detail 페이지 이동")
         db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
             "BookSearchHistoryDB"
         ).build()
 
-
         val model = intent.getParcelableExtra<Book?>("book")
-        Log.d("mainn","모델 : ${model.toString()}")
-//        titleTextView.text = model?.title.orEmpty()
-//        descriptionTextView.text = model?.description.orEmpty()
-//        Glide
-//            .with(coverImgView.context)
-//            .load(model?.coverImgUri.orEmpty())
-//            .into(coverImgView)
+        titleTextView.text = model?.title.orEmpty()
+        descriptionTextView.text = model?.description.orEmpty()
+
+        Glide
+            .with(coverImgView.context)
+            .load(model?.coverImgUri.orEmpty())
+            .into(coverImgView)
     }
 }
