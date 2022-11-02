@@ -1,0 +1,20 @@
+1.네이버에서 도서검색 OpenApi를 신청한다.
+    -네이버 인증키를 받아온다.
+2.프로젝트에 레트로핏을 도입한다.
+    (1) gradle dependencies
+      implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+      implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    (2) 서비스 설정(API)
+       1) interface로 만든다.
+       2) 호출 방식을 NaverApi에서 확인한다.
+       3) Call <DTO>를 받는다.
+        -DTO는 객체간 전달 매체이다. 순수한 DataClass 로 만든다.
+        -@SerializedName("items") 변수 선언
+        -반환값은 List<item>이다.
+       4) @GET(세부 http주소)
+       - @Header( "요구 키값") 변수선언
+           //<>에 모델데이터를 넣어야 함. call은 레트로핏에서 지원하는 특정 클래스로. 콜을 반환한다.
+
+
+** 엑티비티 새로 생성시
+Oncreate 인자가 Bundle 하나만 있는걸로 생성해야한다. 인자 2개있는건 다른 함수임. 이거떔에 개고생함.

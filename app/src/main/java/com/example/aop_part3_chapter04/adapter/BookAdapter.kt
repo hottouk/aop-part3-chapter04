@@ -1,5 +1,6 @@
 package com.example.aop_part3_chapter04.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +12,20 @@ import com.example.aop_part3_chapter04.R
 import com.example.aop_part3_chapter04.model.Book
 
 class BookAdapter(
-    val books: List<Book>
+    val books: List<Book>,
+    val itemClkListener: (Book) -> Unit //람다; 함수를 인자로 받는다.
 ) : RecyclerView.Adapter<BookAdapter.BookItemViewHolder>() {
     inner class BookItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val bookTitleTextView: TextView
-        val bookDescriptionTextView : TextView
-        val coverImgView : ImageView
+        val bookDescriptionTextView: TextView
+        val coverImgView: ImageView
+        val root: View
 
         init {
             bookTitleTextView = itemView.findViewById(R.id.title_textview)
             bookDescriptionTextView = itemView.findViewById(R.id.description_textview)
             coverImgView = itemView.findViewById(R.id.cover_imgview)
+            root = itemView.rootView
         }
 
         fun bindViews(book: Book) {
@@ -31,6 +35,10 @@ class BookAdapter(
                 .with(coverImgView.context)
                 .load(book.coverImgUri)
                 .into(coverImgView)
+
+            root.setOnClickListener {
+                itemClkListener(book)
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.aop_part3_chapter04
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -106,7 +107,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun attachBookAdapter(books: List<Book>) {
-        val adapter = BookAdapter(books)
+        val adapter = BookAdapter(books,
+            //람다형식 함수를 어뎁터의 인자로 넘긴다.
+        itemClkListener = {
+            Log.d(TAG,"개별 항목 클릭${it.title}")
+            val intent = Intent(this@MainActivity,DetailActivity::class.java)
+            //여러 항목을 하나씩 넘기기 보다는 직렬화를 시켜 한번에 넘겨주는게 효율적이다.
+            intent.putExtra("book",it)
+            startActivity(intent)
+        })
         bookRecyclerView.adapter = adapter
         bookRecyclerView.layoutManager = LinearLayoutManager(this)
     }
@@ -121,7 +130,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initSearchEditText() {
-        Log.d(TAG, "showHistoryView 시험")
         searchEditTextView.setOnKeyListener { view, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == MotionEvent.ACTION_DOWN) {
                 search(searchEditTextView.text.toString())
@@ -152,7 +160,6 @@ class MainActivity : AppCompatActivity() {
 
     //HistoryView 보이기
     private fun showHistoryRecyclerView() {
-        Log.d(TAG, "showHistoryView 시험")
         Thread {
             val keywordsHistory = db.historyDao().getAll().reversed()
             runOnUiThread {
@@ -170,6 +177,5 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "mainn"
-
     }
 }

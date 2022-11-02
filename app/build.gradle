@@ -2,6 +2,9 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    //직렬화를 위한 설정
+    id 'kotlin-parcelize'
+
 }
 
 android {
@@ -34,10 +37,10 @@ android {
 }
 
 dependencies {
-
+    //RoomDB 도입
     implementation "androidx.room:room-runtime:2.4.3"
     kapt "androidx.room:room-compiler:2.4.3"
-
+    //레트로핏 도입
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
