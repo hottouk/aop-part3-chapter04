@@ -16,5 +16,7 @@
            //<>에 모델데이터를 넣어야 함. call은 레트로핏에서 지원하는 특정 클래스로. 콜을 반환한다.
 
 
-** 엑티비티 새로 생성시
-Oncreate 인자가 Bundle 하나만 있는걸로 생성해야한다. 인자 2개있는건 다른 함수임. 이거떔에 개고생함.
+** 새롭게 배운 것들
+Oncreate 인자가 Bundle 하나만 있는걸로 생성해야한다. 인자 2개있는건 다른 함수. 이거떔에 개고생함.
+RoomDB는 항상 다른 Thead에서 연다. thread 아니고 Thread! 대문자로 쓰기
+@Insert(onConflict = OnConflictStrategy.REPLACE) //충돌 처리방식 중 하나; 덮어쓰기

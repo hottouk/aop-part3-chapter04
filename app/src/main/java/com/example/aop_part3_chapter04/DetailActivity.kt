@@ -1,8 +1,8 @@
 package com.example.aop_part3_chapter04
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.example.aop_part3_chapter04.model.Book
+import com.example.aop_part3_chapter04.model.Review
 
 class DetailActivity : AppCompatActivity() {
     private val titleTextView: TextView by lazy {
@@ -23,6 +24,9 @@ class DetailActivity : AppCompatActivity() {
     }
     private val reviewEditTextView: EditText by lazy {
         findViewById(R.id.review_detail_edtextview)
+    }
+    private val saveReviewBtn: Button by lazy {
+        findViewById(R.id.save_btn)
     }
 
     lateinit var db: AppDatabase
@@ -44,5 +48,24 @@ class DetailActivity : AppCompatActivity() {
             .with(coverImgView.context)
             .load(model?.coverImgUri.orEmpty())
             .into(coverImgView)
+
+        Thread {
+            val review = db.reviewDao().getOneReview(model?.id?.toLong() ?: 0)
+            review?.let {
+                runOnUiThread {
+                    reviewEditTextView.setText(review.review.toString())
+                }
+            }
+        }.start()
+
+        saveReviewBtn.setOnClickListener {
+            Thread {
+                db.reviewDao().saveReview(
+                    Review(
+                        model?.id?.toLong() ?: 0, reviewEditTextView.text.toString()
+                    )
+                )
+            }.start()
+        }
     }
 }

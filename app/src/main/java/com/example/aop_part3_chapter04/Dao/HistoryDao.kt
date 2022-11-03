@@ -7,7 +7,7 @@ import com.example.aop_part3_chapter04.model.History
 
 @Dao
 interface HistoryDao {
-    @Query("SELECT * FROM HISTORY")
+    @Query("SELECT * FROM History")
     fun getAll(): List<History>
 
     @Insert
