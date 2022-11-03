@@ -1,22 +1,53 @@
-1.네이버에서 도서검색 OpenApi를 신청한다.
+1. 네이버에서 도서검색 OpenApi를 신청한다.
     -네이버 인증키를 받아온다.
-2.프로젝트에 레트로핏을 도입한다.
+2. 틀 만들기; RecyclerView 구현
+    (1) Layout에 RecyclerView 만들기
+    (2) 각각 view에 들어갈 item Layout 구현, 레트로핏에서 사용할 book 모델과 연동
+    (3) 어댑터 class 구현하기 -Adapter 패키지
+      1) 리스트<item> 인자로 받는다.
+      2) recyclerview adapter 상속받는다.<내부 클래스 뷰홀더>
+      3) innerClass 만든다. 뷰홀더 상속
+        - 뷰홀더 내부 구성
+        - findviewbyID
+        - bindView 함수에서 내부 layout과 자료 연동
+      4) 함수 3개 imple 한다
+        - onCreateViewHolder에서는 만든 layout을 홀더에 inflate
+        - getItemCount는 리스트 개수 반환
+        - bindView는 innerClass에서 만든 함수 사용
+      5) 준비된 adapter를 List를 받아 Main에서 실행한다.
+
+3. 자료 준비하기; 레트로핏 사용
     (1) gradle dependencies
-      implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-      implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    (2) 서비스 설정(API)
-       1) interface로 만든다.
-       2) 호출 방식을 NaverApi에서 확인한다.
-       3) Call <DTO>를 받는다.
-        -DTO는 객체간 전달 매체이다. 순수한 DataClass 로 만든다.
-        -@SerializedName("items") 변수 선언
-        -반환값은 List<item>이다.
-       4) @GET(세부 http주소)
-       - @Header( "요구 키값") 변수선언
-           //<>에 모델데이터를 넣어야 함. call은 레트로핏에서 지원하는 특정 클래스로. 콜을 반환한다.
+       implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+       implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    (2) Book 서비스 클래스 설정(API)
+        1) interface로 만든다.
+        2) 호출 방식을 NaverApi에서 확인한다.
+        3) @GET(세부 http주소)
+        4) 내부 함수는 Call<DTO>를 반환한다.
+          - @Header( "요구 키 값") 변수선언
+          - Call은 레트로핏에서 지원하는 특정 클래스
+    (3) DTO 클래스 설정(Data Transfer Object) - Model패키지
+        1) DTO는 객체간 전달 매체이다. DataClass로 만든다.
+        2) 서버에서 받아온 item들을 감싸는 wrapper 역할을 한다. 타입을 List<Entity> 변수로 선언한다.
+        3) @SerializedName("items") 변수 선언; 이건 각 API마다 다르니 API 사용법 확인
+        4) 반환값은 List<item>이다.
+    (4) item Entity 클래스 설정 -Model 패키지
+        1) @Entity
+        2) API에서 받아올 항목들을 @SerializedName("이름")로 변수선언 -> Talend 통해 확인
+    (5) 사용법
+        1) Main Oncreate에 레트로핏 구현
+          - 빌더
+          - basURL
+          - addConverterFactory
+          - 빌드
+        2) 레트로핏.create(만든 서비스)
+        3) 서비스.함수.enqueue(오브젝트; 콜백상속<DTO>)
+          - 함수2개 imple
 
 
 ** 새롭게 배운 것들
-Oncreate 인자가 Bundle 하나만 있는걸로 생성해야한다. 인자 2개있는건 다른 함수. 이거떔에 개고생함.
-RoomDB는 항상 다른 Thead에서 연다. thread 아니고 Thread! 대문자로 쓰기
-@Insert(onConflict = OnConflictStrategy.REPLACE) //충돌 처리방식 중 하나; 덮어쓰기
+- Oncreate 인자가 Bundle 하나만 있는걸로 생성해야한다. 인자 2개있는건 다른 함수. 이거떔에 개고생함.
+- RoomDB는 항상 다른 Thead에서 연다. thread 아니고 Thread! 대문자로 쓰기
+- @Insert(onConflict = OnConflictStrategy.REPLACE) //충돌 처리방식 중 하나; 덮어쓰기
+- DTO는 서버에서 받아온 item을 묶는 wrapper, DAO는 CRUD 인터페이스 집합

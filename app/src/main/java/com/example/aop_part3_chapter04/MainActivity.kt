@@ -39,7 +39,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        //데이터 받아오기
+        receivingData()
         //룸DB
         db = Room.databaseBuilder(
             applicationContext,
@@ -47,7 +48,25 @@ class MainActivity : AppCompatActivity() {
             "BookSearchHistoryDB"
         ).build()
 
-        val retrofit = Retrofit.Builder()
+        initSearchEditText()
+    }
+    //1. BookAdapter 실행(틀 준비)
+    private fun attachBookAdapter(books: List<Book>) {
+        val adapter = BookAdapter(books,
+            //람다형식 함수를 어뎁터의 인자로 넘긴다.
+            itemClkListener = {
+                Log.d(TAG,"개별 항목 클릭${it.title}")
+                val intent = Intent(this@MainActivity,DetailActivity::class.java)
+                //여러 항목을 하나씩 넘기기 보다는 직렬화를 시켜 한번에 넘겨주는게 효율적이다.
+                intent.putExtra("book",it)
+                startActivity(intent)
+            })
+        bookRecyclerView.adapter = adapter
+        bookRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+    //2. 레트로핏(자료 준비)
+    private fun receivingData(){
+       val retrofit = Retrofit.Builder()
             .baseUrl("https://openapi.naver.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -74,16 +93,14 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, t.toString())
             }
         })
-        initSearchEditText()
     }
-
+    //3. 검색 기능 구현
     private fun search(keyword: String) {
         bookService.getBooksByName(
             getString(R.string.naver_API_ID),
             getString(R.string.naver_API_SECRETKEY),
             keyword
-        )
-            .enqueue(object : Callback<BookSearchDto> {
+        ).enqueue(object : Callback<BookSearchDto> {
                 override fun onResponse(
                     call: Call<BookSearchDto>,
                     response: Response<BookSearchDto>
@@ -106,19 +123,7 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-    private fun attachBookAdapter(books: List<Book>) {
-        val adapter = BookAdapter(books,
-            //람다형식 함수를 어뎁터의 인자로 넘긴다.
-        itemClkListener = {
-            Log.d(TAG,"개별 항목 클릭${it.title}")
-            val intent = Intent(this@MainActivity,DetailActivity::class.java)
-            //여러 항목을 하나씩 넘기기 보다는 직렬화를 시켜 한번에 넘겨주는게 효율적이다.
-            intent.putExtra("book",it)
-            startActivity(intent)
-        })
-        bookRecyclerView.adapter = adapter
-        bookRecyclerView.layoutManager = LinearLayoutManager(this)
-    }
+
 
     private fun attachHistoryAdapter(keywordsHistory: List<History>) {
         val adapter = HistoryAdapter(keywordsHistory, historyDeleteClickedListener = { keyword ->
