@@ -41,13 +41,54 @@
           - basURL
           - addConverterFactory
           - 빌드
-        2) 레트로핏.create(만든 서비스)
+        2) 레트로핏.create(만든 서비스) -> lateInit으로 전역변수화
         3) 서비스.함수.enqueue(오브젝트; 콜백상속<DTO>)
-          - 함수2개 imple
+          - 함수2개 imple(OnRequest, OnFailure)
 
+4. 검색기능 구현하기
+    (1) Bookservice 이용하여 Search 함수 구현; Query만 Editxt 인자로 받는다.
+    (2) 구현한 함수를 Editxt가 enter 치면 실행되게 한다.
+        - setOnKeyListener 를 이용한다.
+           - true와 false를 반환한다
+
+5. 검색어 history 저장 기능; Room DB사용
+    (1) 검색어 history 보여줄 Layout을 구현한다
+        1) Layout에 RecyclerView 만들기
+        2) 각각 view에 들어갈 item Layout 구현
+        3) 어댑터 구현 -Adapter 패키지
+    (2) RoomDB 설치
+        implementation "androidx.room:room-runtime:2.4.3"
+        kapt "androidx.room:room-compiler:2.4.3"
+    (3) HistoryDao를 구현
+        1) interface
+        2) @Dao
+        3) CRUD 구현(BookService 같은 존재)
+    (4) History item 구현
+        1) dataClass
+        2) @Entity
+        3) uid, keyword만 구현
+    (5) AppDatabase class 구현
+        1) 추상클래스
+        2) @Database(entities = [History::class, Review::class], version = 1)
+        3) HistoryDao 추상 함수 구현
+    (6) 사용
+        1) Editxt에 setOnTouch 람다 안에서 사용
+        2) HistoryView 나타나게 구현
+        3) 나타나면서 검색어 DB에서 데이터를 받아 Adapter에 전달한다
+        4) DB는 다른 Thread, 표현은 UIThread에서 한다. .start
+7. 상세페이지로 이동하기
+    (1) Detail Layout 만들기
+    (2) BookAdapter의 인자로 Listener 를 받도록 설정
+        1) 이 listener는 bindView에서 사용
+        2)  Listener는 book을 인자로 받는다.
+        3)  Main에서 attachAdapter 함수에서 사용 시 구현한다.
+    (3) 사용 시 intnet와 PutExtra로 엑티비티 이동
+        1) book의 여러 항목을 하나씩 넘기기 보다는 직렬화를 시켜 한번에 넘겨주는게 효율적이다.
+        2) 직렬화 시 사용 코드 @Parcelize, 끝에는 :Parcelable 붙인다.
 
 ** 새롭게 배운 것들
 - Oncreate 인자가 Bundle 하나만 있는걸로 생성해야한다. 인자 2개있는건 다른 함수. 이거떔에 개고생함.
 - RoomDB는 항상 다른 Thead에서 연다. thread 아니고 Thread! 대문자로 쓰기
 - @Insert(onConflict = OnConflictStrategy.REPLACE) //충돌 처리방식 중 하나; 덮어쓰기
-- DTO는 서버에서 받아온 item을 묶는 wrapper, DAO는 CRUD 인터페이스 집합
+- DTO(DataTransferObeject)는 서버에서 받아온 item을 묶는 wrapper, DAO(DataAccessObject)는 CRUD 인터페이스 집합
+- editxt.onKeyListenr와

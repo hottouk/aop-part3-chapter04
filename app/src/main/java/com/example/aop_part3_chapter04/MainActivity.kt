@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         //데이터 받아오기
         receivingData()
         //룸DB
+
         db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
@@ -113,7 +114,6 @@ class MainActivity : AppCompatActivity() {
                     response.body()?.let {
                         attachBookAdapter(it.books)
                     }
-
                 }
 
                 override fun onFailure(call: Call<BookSearchDto>, t: Throwable) {
@@ -121,17 +121,6 @@ class MainActivity : AppCompatActivity() {
                     hideHistoryRecyclerView()
                 }
             })
-    }
-
-
-
-    private fun attachHistoryAdapter(keywordsHistory: List<History>) {
-        val adapter = HistoryAdapter(keywordsHistory, historyDeleteClickedListener = { keyword ->
-            deleteSearchKeyword(keyword)
-        })
-        historyRecyclerView.adapter = adapter
-        historyRecyclerView.layoutManager = LinearLayoutManager(this)
-
     }
 
     private fun initSearchEditText() {
@@ -146,8 +135,16 @@ class MainActivity : AppCompatActivity() {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 showHistoryRecyclerView()
             }
-                return@setOnTouchListener false
+            return@setOnTouchListener false
         }
+    }
+    //A
+    private fun attachHistoryAdapter(keywordsHistory: List<History>) {
+        val adapter = HistoryAdapter(keywordsHistory, historyDeleteClickedListener = { keyword ->
+            deleteSearchKeyword(keyword)
+        })
+        historyRecyclerView.adapter = adapter
+        historyRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun saveSearchKeyword(keyword: String) {

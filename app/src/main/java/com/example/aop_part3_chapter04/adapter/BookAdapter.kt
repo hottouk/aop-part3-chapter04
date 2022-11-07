@@ -12,14 +12,14 @@ import com.example.aop_part3_chapter04.R
 import com.example.aop_part3_chapter04.model.Book
 
 class BookAdapter(
-    val books: List<Book>,
+    private val books: List<Book>,
     val itemClkListener: (Book) -> Unit //람다; 함수를 인자로 받는다.
 ) : RecyclerView.Adapter<BookAdapter.BookItemViewHolder>() {
     inner class BookItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val bookTitleTextView: TextView
-        val bookDescriptionTextView: TextView
-        val coverImgView: ImageView
-        val root: View
+        private val bookTitleTextView: TextView
+        private val bookDescriptionTextView: TextView
+        private val coverImgView: ImageView
+        private val root: View
 
         init {
             bookTitleTextView = itemView.findViewById(R.id.title_textview)
